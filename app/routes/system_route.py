@@ -1,9 +1,26 @@
 from fastapi import APIRouter
 
-from app.db.database import audit_collection
+from app.db.database import audit_collection, db, products_collection, orders_collection
+from app.services.reservation_service import reservation_store
 
 router = APIRouter(tags=["System"]) 
 
+@router.get("/health")
+async def health():
+    await db.command("ping")
+    return {"status": "ok"}
+
+
+@router.get("/metrics")
+async def metrics():
+    product_count = await products_collection.count_documents({})
+    order_count = await orders_collection.count_documents({})
+    active_reservations = len(reservation_store)
+    return {
+        "products": product_count,
+        "orders": order_count,
+        "active_reservations_in_memory": active_reservations,
+    }
 
 @router.get("/audit/")
 async def get_audit_logs(limit: int = 50):
