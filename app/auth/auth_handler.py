@@ -1,7 +1,7 @@
 import time
 import jwt
 
-JWT_SECRET = "supersecretkey"   # ⚠️ use env var in real apps
+JWT_SECRET = "9f3f0d1b83d749fbaf713a62c47e9e5a7ac7f5c3122a491d92e6e42f41c8bdf0"
 JWT_ALGORITHM = "HS256"
 
 
