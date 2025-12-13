@@ -5,7 +5,7 @@ from uuid import uuid4
 from fastapi import HTTPException
 from pydantic import BaseModel
 from datetime import datetime, timedelta
-
+from app.schemas.reservation_schema import ReservationCreate
 from pymongo import ReturnDocument
 
 from app.db.database import (
@@ -32,7 +32,7 @@ reservation_store: Dict[str, ReservationInMemory] = {}
 reservation_lock = asyncio.Lock()
 
 
-async def create_reservation(payload) -> ReservationInMemory:
+async def create_reservation(payload: ReservationCreate, user_id: str) -> ReservationInMemory:
     async with reservation_lock:
         product = await products_collection.find_one_and_update(
             {
@@ -61,7 +61,7 @@ async def create_reservation(payload) -> ReservationInMemory:
 
         res = ReservationInMemory(
             reservation_id=reservation_id,
-            user_id=payload.user_id,
+            user_id=user_id,
             product_id=payload.product_id,
             quantity=payload.quantity,
             status="active",
@@ -77,7 +77,7 @@ async def create_reservation(payload) -> ReservationInMemory:
             "reservation_created",
             "reservation",
             reservation_id,
-            payload.user_id,
+            user_id,
             {"product_id": payload.product_id, "quantity": payload.quantity},
         )
 

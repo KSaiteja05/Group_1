@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import (
+    auth_route,
     product_route,
     reservation_route,
     order_route,
@@ -20,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_route.router)
 app.include_router(product_route.router)
 app.include_router(reservation_route.router)
 app.include_router(order_route.router)

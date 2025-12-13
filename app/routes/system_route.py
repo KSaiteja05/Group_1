@@ -1,9 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from app.db.database import audit_collection, db, products_collection, orders_collection
+from app.db.database import db, products_collection, orders_collection, audit_collection
 from app.services.reservation_service import reservation_store
+from app.auth.deps import require_admin
 
-router = APIRouter(tags=["System"]) 
+router = APIRouter(tags=["System"])
+
 
 @router.get("/health")
 async def health():
@@ -11,7 +13,7 @@ async def health():
     return {"status": "ok"}
 
 
-@router.get("/metrics")
+@router.get("/metrics", dependencies=[Depends(require_admin)])
 async def metrics():
     product_count = await products_collection.count_documents({})
     order_count = await orders_collection.count_documents({})
@@ -22,7 +24,8 @@ async def metrics():
         "active_reservations_in_memory": active_reservations,
     }
 
-@router.get("/audit/")
+
+@router.get("/audit/", dependencies=[Depends(require_admin)])
 async def get_audit_logs(limit: int = 50):
     cursor = audit_collection.find({}).sort("timestamp", -1).limit(limit)
     logs = await cursor.to_list(length=limit)

@@ -20,4 +20,9 @@ async def log_event(
         "ip_address": None,
         "user_agent": None,
     }
-    await audit_collection.insert_one(doc)
+    print(f"[AUDIT LOG] Writing to DB: {doc}")
+    try:
+        result = await audit_collection.insert_one(doc)
+        print(f"[AUDIT LOG] Inserted with id: {result.inserted_id}")
+    except Exception as e:
+        print(f"[AUDIT LOG ERROR] {e}")

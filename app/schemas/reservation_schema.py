@@ -1,9 +1,9 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, Field
 
 
 class ReservationCreate(BaseModel):
-    user_id: str
     product_id: str
     quantity: int = Field(gt=0)
     ttl_minutes: int = Field(gt=0, le=60)
@@ -17,6 +17,7 @@ class ReservationResponse(BaseModel):
     status: str
     created_at: datetime
     expires_at: datetime
+    available_stock: Optional[int] = None
 
 
 class ReservationCommitRequest(BaseModel):
