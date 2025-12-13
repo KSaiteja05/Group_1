@@ -19,6 +19,9 @@ python-dotenv==1.0.1
 # Pydantic validation 
 pydantic==2.8.2
 
+# Pydantic with email support
+pydantic[email]==2.8.2
+
 # Date and time utilities 
 python-dateutil==2.9.0.post0
 
