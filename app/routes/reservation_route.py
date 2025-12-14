@@ -71,7 +71,6 @@ async def get_user_reservations(
 ):
     user_email = current_user["email"]
 
-    # 👇 use user_email instead of user_id
     items = await rs.get_user_active_reservations(user_email)
 
     return [

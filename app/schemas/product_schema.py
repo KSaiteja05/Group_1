@@ -18,7 +18,7 @@ class ProductResponse(BaseModel):
     total_stock: int
     available_stock: int
     reserved_stock: int
-    created_at: datetime
+    created_at: Optional[datetime] = None
 
 
 class StockAdjustmentRequest(BaseModel):

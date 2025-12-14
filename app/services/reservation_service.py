@@ -1,13 +1,13 @@
 import asyncio
-from typing import Dict, List, Optional
+from typing import Dict, List
 from uuid import uuid4
 
 from fastapi import HTTPException
 from pydantic import BaseModel
 from datetime import datetime, timedelta
-from app.schemas.reservation_schema import ReservationCreate
 from pymongo import ReturnDocument
 
+from app.schemas.reservation_schema import ReservationCreate
 from app.db.database import (
     products_collection,
     reservations_collection,
@@ -15,6 +15,10 @@ from app.db.database import (
 )
 from app.services.audit_service import log_event
 from app.utils.time_utils import now_utc
+from app.core.config import (
+    RESERVATION_DEFAULT_TTL_MINUTES,
+    RESERVATION_CLEANUP_INTERVAL_SECONDS,
+)
 
 
 class ReservationInMemory(BaseModel):
@@ -56,7 +60,10 @@ async def create_reservation(payload: ReservationCreate, user_id: str) -> Reserv
 
         reservation_id = f"RES_{uuid4().hex[:8]}"
         created_at = now_utc()
-        expires_at = created_at + timedelta(minutes=payload.ttl_minutes)
+
+        ttl_minutes = payload.ttl_minutes or RESERVATION_DEFAULT_TTL_MINUTES
+        expires_at = created_at + timedelta(minutes=ttl_minutes)
+
         unit_price = float(product["price"])
 
         res = ReservationInMemory(
@@ -254,5 +261,5 @@ async def cleanup_expired_reservations():
 
 async def expiration_worker():
     while True:
-        await asyncio.sleep(30)
+        await asyncio.sleep(RESERVATION_CLEANUP_INTERVAL_SECONDS)
         await cleanup_expired_reservations()
