@@ -22,5 +22,5 @@ class ProductResponse(BaseModel):
 
 
 class StockAdjustmentRequest(BaseModel):
-    delta: int  # can be positive or negative
+    change_quantity: int
     reason: str

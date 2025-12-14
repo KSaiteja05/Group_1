@@ -83,18 +83,17 @@ async def adjust_stock(
         {"product_id": product_id},
         {
             "$inc": {
-                "total_stock": payload.delta,
-                "available_stock": payload.delta,
+                "total_stock": payload.change_quantity,
+                "available_stock": payload.change_quantity,
             }
         },
         return_document=ReturnDocument.AFTER,
     )
 
-    # stock history table (fine as you had)
     await stock_history_collection.insert_one(
         {
             "product_id": product_id,
-            "delta": payload.delta,
+            "change_quantity": payload.change_quantity,
             "reason": payload.reason,
             "timestamp": now_utc(),
             "before": {
@@ -114,7 +113,7 @@ async def adjust_stock(
         entity_id=product_id,
         user_id=current_user["email"],
         changes={
-            "delta": payload.delta,
+            "change_quantity": payload.change_quantity,
             "reason": payload.reason,
             "before": {
                 "total_stock": before["total_stock"],
