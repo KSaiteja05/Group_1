@@ -29,3 +29,4 @@ pytest-asyncio==0.24.0
 # Date and time utilities 
 python-dateutil==2.9.0.post0
 
+httpx-0.28.1  

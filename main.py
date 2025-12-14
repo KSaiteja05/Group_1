@@ -1,4 +1,8 @@
+
 import asyncio
+import contextlib
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -11,7 +15,24 @@ from app.routes import (
 )
 from app.services.reservation_service import expiration_worker
 
-app = FastAPI(title="Inventory Reservation & Order Locking Service")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
+    task = asyncio.create_task(expiration_worker())
+    try:
+        yield
+    finally:
+        # Shutdown logic (optional but safe)
+        task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await task
+
+
+app = FastAPI(
+    title="Inventory Reservation & Order Locking Service",
+    lifespan=lifespan,
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,7 +48,3 @@ app.include_router(reservation_route.router)
 app.include_router(order_route.router)
 app.include_router(system_route.router)
 
-
-@app.on_event("startup")
-async def startup_event():
-    asyncio.create_task(expiration_worker())

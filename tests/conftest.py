@@ -1,6 +1,6 @@
 # tests/conftest.py
 
-import pytest
+import pytest,pytest_asyncio
 from types import SimpleNamespace
 from typing import Any, Dict, List
 
@@ -181,3 +181,5 @@ def fake_db():
 
     yield
     # No explicit cleanup needed; new fakes created next test
+
+
