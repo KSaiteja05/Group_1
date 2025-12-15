@@ -1,33 +1,24 @@
 Inventory Reservation & Order Locking Service:
 A high-performance, secure inventory reservation system built using FastAPI, MongoDB, and async concurrency controls, designed to handle real-world stock reservation, order locking, and expiry scenarios with role-based access control and audit logging.
 
+
 1. Project Overview
 This service enables:
 
     - Admins to manage products, stock, orders, and system metrics
-
     - Users to reserve products, commit reservations into orders, or cancel them
-
     - Automatic expiration of unused reservations
-
     - Concurrency-safe stock updates
-
     - JWT-based authentication
-
     - Complete audit logging for traceability
-
     - The system is suitable for e-commerce platforms, flash sales, and inventory-critical applications.
 
 
 2. Key Features
 - FastAPI framework for high-performance async API handling
-
 - AsyncIO Locks for concurrency safety
-
 - In-memory reservation store for fast operations
-
 - Persistent MongoDB storage for durability
-
 - Background worker for reservation expiration
 
 
@@ -259,3 +250,38 @@ User Controls
     - In-memory store is process-local
     - Single instance recommended (or use Redis for scale)
     - Payment is simulated (not integrated)
+
+
+Project Structure:
+
+├── main.py
+├── app
+│   ├── auth
+│   │   ├── auth_bearer.py
+│   │   ├── auth_handler.py
+│   │   └── deps.py
+│   ├── db
+│   │   └── database.py
+│   ├── routes
+│   │   ├── auth_route.py
+│   │   ├── product_route.py
+│   │   ├── reservation_route.py
+│   │   ├── order_route.py
+│   │   └── system_route.py
+│   ├── schemas
+│   │   ├── product_schema.py
+│   │   ├── reservation_schema.py
+│   │   ├── order_schema.py
+│   │   └── audit_schemas.py
+│   ├── services
+│   │   ├── reservation_service.py
+│   │   ├── order_service.py
+│   │   └── audit_service.py
+│   └── utils
+│       └── time_utils.py
+├── tests
+│   ├── test_products.py
+│   ├── test_reservations.py
+│   ├── test_orders.py
+│   └── test_auth.py
+└── README.md
