@@ -152,7 +152,7 @@ User Controls
 
     - Start the Server
         ```
-            uvicorn app.main:app --reload
+            uvicorn main:app --reload
         ```
 
 
