@@ -28,7 +28,7 @@ This service enables:
     Database              - MongoDB
     ODM                   - Motor (Async)
     Authentication        - JWT
-    Password Hashing      - PBKDF2
+    Password Hashing      - PBKDF2 
     Async Tasks           - asyncio
     Testing               - pytest, pytest-asyncio
     API Docs              - Swagger (OpenAPI)
